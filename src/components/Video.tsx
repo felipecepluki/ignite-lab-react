@@ -1,29 +1,23 @@
 import { gql, useQuery } from "@apollo/client";
 import { Player, Youtube, DefaultUi } from "@vime/react";
-
-import {
-  CaretRight,
-  DiscordLogo,
-  FileArrowDown,
-  Lightning,
-} from "phosphor-react";
+import { CaretRight, DiscordLogo, FileArrowDown, Lightning } from "phosphor-react";
 
 import "@vime/core/themes/default.css";
 
-const GET_LESSONS_BY_SLUG_QUERY = gql`
-  query GetLessonBySlug($slug: String) {
-    lesson(where: { slug: $slug }) {
-      title
-      videoId
-      description
-      teacher {
-        avatarURL
-        bio
-        name
-      }
+const GET_LESSON_BY_SLUG_QUERY = gql`
+  query GetLessonBySlug ($slug: String) {
+  lesson(where: {slug: $slug}) {
+    videoId
+    title
+    description
+    teacher {
+      bio
+      avatarURL
+      name
     }
   }
-`;
+}
+`
 
 interface GetLessonBySlugResponse {
   lesson: {
@@ -34,8 +28,8 @@ interface GetLessonBySlugResponse {
       bio: string;
       avatarURL: string;
       name: string;
-    };
-  };
+    }
+  }
 }
 
 interface VideoProps {
@@ -43,21 +37,19 @@ interface VideoProps {
 }
 
 export function Video(props: VideoProps) {
-  const { data } = useQuery<GetLessonBySlugResponse>(
-    GET_LESSONS_BY_SLUG_QUERY,
-    {
-      variables: {
-        slug: props.lessonSlug,
-      },
-    }
-  );
+  const { data } = useQuery<GetLessonBySlugResponse>(GET_LESSON_BY_SLUG_QUERY,{
+    variables:{
+      slug: props.lessonSlug,
+    },
+    fetchPolicy: "no-cache"
+  })
 
-  if (!data) {
+  if (!data){
     return (
       <div className="flex-1">
         <p>Carregando...</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -153,5 +145,5 @@ export function Video(props: VideoProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }
